@@ -1,4 +1,6 @@
 const { Validator } = require('sequelize');
+const bcrypt = require('bcryptjs');
+const { Op } = require('sequelize');
 
 'use strict';
 module.exports = (sequelize, DataTypes) => {
@@ -57,6 +59,48 @@ module.exports = (sequelize, DataTypes) => {
 
   User.associate = function(models) {
     // associations can be defined here
+  };  
+  
+  // user functions
+  User.prototype.toSafeObject = function() { // remember, this cannot be an arrow function
+    const { id, username, email } = this; // context will be the User instance
+    return { id, username, email };
   };
+
+  User.prototype.validatePassword = function (password) {
+    return bcrypt.compareSync(password, this.hashedPassword.toString());
+   };
+
+   // static (base level)
+  User.getCurrentUserById = async function (id) {
+    return await User.scope('currentUser').findByPk(id);
+  };
+
+  User.login = async function({credential, password}) {
+    let user = await User.findOne(  {where: {
+      [Op.or]:{
+        username:credential,
+        email:credential
+      }
+    }
+      }
+    )
+    if (user && user.validatePassword(password)) {
+      return await User.scope('currentUser').findByPk(id);
+    }
+  }
+
+  User.signup = async function({username, email, password}) {
+    const hashedPassword = bcrypt.hashSync(password)
+    const newUser = User.create(
+      {
+      
+        username,
+        email,
+        hashedPassword
+      }
+    )
+    return await User.scope('currentUser').findByPk(newUser.id);    
+  }
   return User;
 };
