@@ -50,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
       currentUser: {
         exclude: ['hashedPassword']
       },
-      admin: {
+      loginUser: {
         attributes: {}
       }
 
@@ -68,7 +68,10 @@ module.exports = (sequelize, DataTypes) => {
   };
 
   User.prototype.validatePassword = function (password) {
+    console.log("🚀 ~ file: user.js:71 ~ password:", password)
+    console.log("🚀 ~ file: user.js:74 ~ this:", this)
     return bcrypt.compareSync(password, this.hashedPassword.toString());
+    
    };
 
    // static (base level)
@@ -77,7 +80,7 @@ module.exports = (sequelize, DataTypes) => {
   };
 
   User.login = async function({credential, password}) {
-    let user = await User.findOne(  {where: {
+    let user = await User.scope('loginUser').findOne(  {where: {
       [Op.or]:{
         username:credential,
         email:credential
@@ -86,7 +89,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     )
     if (user && user.validatePassword(password)) {
-      return await User.scope('currentUser').findByPk(id);
+      return await User.scope('currentUser').findByPk(user.id);
     }
   }
 
