@@ -11,11 +11,8 @@ const router = express.Router();
 router.post(
   '/',
   asyncHandler(async (req,res, next) => {
-    const {credential, password} = req.body;
-    console.log("🚀 ~ file: session.js:15 ~ asyncHandler ~ credential, password:", credential, password)
-    
+    const {credential, password} = req.body;    
     const user = await User.login({credential, password});
-    console.log("🚀 ~ file: session.js:18 ~ asyncHandler ~ user:", user)
     
     if (user) {
       await setTokenCookie(res, user);
