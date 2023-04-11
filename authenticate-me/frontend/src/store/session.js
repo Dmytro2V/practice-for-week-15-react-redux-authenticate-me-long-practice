@@ -7,6 +7,7 @@ const SET_USER = 'session/SET_USER';
 const REMOVE_USER = 'session/REMOVE_USER';
 
 
+
 // action creators
 const setUser = (user) => {
   return {
@@ -65,6 +66,24 @@ export const restoreUser = () => async (dispatch) => {
   dispatch (setUser(data.user));
   return response;
 } 
+
+export const signup = (user) => async (dispatch) => {
+  const {username, email, password} = user;
+  console.log("🚀 ~ file: session.js:72 ~ signup ~ username, email, password:", username, email, password)
+  const response = await csrfFetch(
+    '/api/users',
+    {
+      method: 'POST',
+      body:JSON.stringify({
+        username,
+        email,
+        password,
+      }),
+    })
+  const data = await response.json()
+  dispatch (setUser(data.user));
+  return response;
+}
 
 // reducer:
 const initialState = { user: null };

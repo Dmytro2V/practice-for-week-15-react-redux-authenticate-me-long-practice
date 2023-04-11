@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { login } from '../../store/session'
+import { signup } from '../../store/session'
 import { Redirect } from 'react-router-dom';
-import './loginForm.css';
+import './signupForm.css';
 
-const LoginFormPage = () => {
+const SignupFormPage = () => {
   const dispatch = useDispatch()
   
-  const [credential, setCredential] = useState('')
+  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [errors, setErrors] = useState([]);
 
@@ -20,10 +21,11 @@ const LoginFormPage = () => {
     e.preventDefault();
     setErrors([]);
     const user = {
-      credential,
+      username,
+      email,
       password
     }
-    return dispatch(login(user))
+    return dispatch(signup(user))
       .catch(async (res) => {
         const data = await res.json();
         if (data && data.errors) setErrors(data.errors);
@@ -32,23 +34,35 @@ const LoginFormPage = () => {
 
   return (
     <>
-      <h2>Login Form</h2>
+      <h2>Signup Form</h2>
       <form onSubmit={onSubmit}>
         <div className='container'>
         <ul>
           {errors.map((error, idx) => <li key={idx}>{error}</li>)}
         </ul>
         <label>
-          <b>Username or Email:</b>
+          <b>Username:</b>
           <input
             type='text'
-            value={credential}
-            placeholder='username or email'
-            onChange={(e) => setCredential(e.target.value)}
+            value={username}
+            placeholder='username'
+            onChange={(e) => setUsername(e.target.value)}
             //name = 'credential'
             required
           />
         </label>
+        <label>
+          <b>Email:</b>
+          <input
+            type='text'
+            value={email}
+            placeholder='email'
+            onChange={(e) => setEmail(e.target.value)}
+            //name = 'credential'
+            required
+          />
+        </label>
+        
         <label>
           <b>Password:</b>
           <input
@@ -60,7 +74,7 @@ const LoginFormPage = () => {
             required
           />
         </label>
-        <button type="submit">Log In</button>
+        <button type="submit">Sign Up</button>
         </div>
       </form>
     </>
@@ -68,4 +82,4 @@ const LoginFormPage = () => {
 
 }
 
-export default LoginFormPage;
+export default SignupFormPage;
