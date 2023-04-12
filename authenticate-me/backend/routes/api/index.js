@@ -16,9 +16,9 @@ router.use('/session', sessionRouter);
 router.use('/users', usersRouter);
 
 //---------------test functions
-router.post('/test', function(req, res) {
+/* router.post('/test', function(req, res) {
   res.json({ requestBody: req.body });
-});
+}); */
 // GET /api/set-token-cookie - testing -get demo user and set token-cookie
 router.get('/set-token-cookie', asyncHandler(async (_req, res) => {
   const user = await User.findOne({

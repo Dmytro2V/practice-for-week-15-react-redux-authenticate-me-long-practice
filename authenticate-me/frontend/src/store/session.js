@@ -41,7 +41,7 @@ export const login = (user) => async (dispatch) => {
 }
 
   // logout:
-export const logout = (user) => async (dispatch) => {
+export const logout = () => async (dispatch) => {
     
     const response = await csrfFetch(
       '/api/session',
@@ -49,12 +49,12 @@ export const logout = (user) => async (dispatch) => {
         method: 'DELETE'
       })
     //const data = await response.json()
-    dispatch (removeUser(user));
+    dispatch (removeUser());
     return response;
   }
    // restore:   
 export const restoreUser = () => async (dispatch) => {
-  console.log("🚀 ~ file: session.js:56 ~ restore ~ dispatch:")
+
   
   const response = await csrfFetch(
     '/api/session',
@@ -69,7 +69,7 @@ export const restoreUser = () => async (dispatch) => {
 
 export const signup = (user) => async (dispatch) => {
   const {username, email, password} = user;
-  console.log("🚀 ~ file: session.js:72 ~ signup ~ username, email, password:", username, email, password)
+ 
   const response = await csrfFetch(
     '/api/users',
     {

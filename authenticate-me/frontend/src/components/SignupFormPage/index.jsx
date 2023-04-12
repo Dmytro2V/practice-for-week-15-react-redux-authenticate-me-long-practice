@@ -10,6 +10,7 @@ const SignupFormPage = () => {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [errors, setErrors] = useState([]);
 
   const sessionUser = useSelector(state => state.session.user);
@@ -25,11 +26,17 @@ const SignupFormPage = () => {
       email,
       password
     }
-    return dispatch(signup(user))
-      .catch(async (res) => {
-        const data = await res.json();
-        if (data && data.errors) setErrors(data.errors);
-      });
+    if (password === confirmPassword) {
+      
+      return dispatch(signup(user))
+        .catch(async (res) => {
+          const data = await res.json();
+          if (data && data.errors) setErrors(data.errors);
+        }
+      );
+    } else {
+      return setErrors(['Passwords are different'])
+    }
   };
 
   return (
@@ -70,6 +77,17 @@ const SignupFormPage = () => {
             value={password}
             placeholder='password'
             onChange={(e) => setPassword(e.target.value)}
+            //name = 'password'
+            required
+          />
+        </label>
+        <label>
+          <b>Confirm password:</b>
+          <input
+            type='password'
+            value={confirmPassword}
+            placeholder='password'
+            onChange={(e) => setConfirmPassword(e.target.value)}
             //name = 'password'
             required
           />
